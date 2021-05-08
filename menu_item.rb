@@ -9,6 +9,8 @@ class MenuItem
         @tags = tags
     end
 
+    
+
 end
 
 # display individual ticket 
