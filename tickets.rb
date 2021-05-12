@@ -4,23 +4,20 @@ class Tickets
     attr_accessor :tickets
 
     def initialize(tickets = [])
-        @tickets = tickets
+        @zendesk_tickets = tickets
     end
 
     def view_all
         system 'clear'
-        ticketss = @zendesk_tickets[:tickets]
-        ticket_counter = 1
         ticket_reset = 0
-        tickets.each do |ticket|
+        @zendesk_tickets[:tickets].each_with_index do |ticket, index|
             puts
-            puts "Ticket Number: #{ticket_counter} | Assignee id: #{ticket[:assignee_id]}"
+            puts "Ticket Number: #{index + 1} | Assignee id: #{ticket[:assignee_id]}"
             puts "Subject: #{ticket[:subject]}"
             puts "-" * 40
             puts "Description:"
             puts "#{ticket[:description][0..50]}"
             puts "-" * 40
-            ticket_counter += 1
             ticket_reset += 1
             if ticket_reset >= 25
                 menu_selection_all

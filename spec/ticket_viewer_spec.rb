@@ -8,7 +8,7 @@ describe MenuItem do
         subject = "sample ticket"
         description = "this is a new ticket"
         tags = ["first ticket", "important"]
-        menu_item = MenuItem.new(requester_id, assignee_id, subject, description, tags)
+        menu_item = Ticket.new(requester_id, assignee_id, subject, description, tags)
         expect(menu_item.subject).to eq(subject)
     end
 
@@ -18,7 +18,7 @@ describe MenuItem do
         subject = "sample ticket"
         description = "this is a new ticket"
         tags = ["first ticket", "important"]
-        menu_item = MenuItem.new(requester_id, assignee_id, subject, description, tags)
+        menu_item = Ticket.new(requester_id, assignee_id, subject, description, tags)
         expect(menu_item.requester_id).to eq(requester_id)
     end
 

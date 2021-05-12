@@ -4,14 +4,21 @@ require_relative './Ticket'
 class Session
 
     def initialize
-
+        @zendesk_tickets = {}
     end
 
     def load_tickets(username, password)
-        conn = Faraday.new
-        conn.basic_auth(username, password)
-        response = conn.get('https://jackiesun2.zendesk.com/api/v2/tickets.json')
-        @@zendesk_tickets = JSON.parse(response.body, symbolize_names: true)
+        begin
+            conn = Faraday.new
+            conn.basic_auth(username, password)
+            response = conn.get('https://jackiesun2.zendesk.com/api/v2/tickets.json')
+            @zendesk_tickets = JSON.parse(response.body, symbolize_names: true)
+            pp response.status
+            raise StandardError if response.status.to_i >= 400 
+        rescue 
+            puts "This path is incorrect, please check again"
+            exit
+        end 
     end
 
     def welcome_message
@@ -28,7 +35,7 @@ class Session
         selection = gets.chomp.to_i
         case selection
         when 1
-            all_tickets = Tickets.new
+            all_tickets = Tickets.new(@zendesk_tickets)
             all_tickets.view_all
         when 2
             single_ticket = Ticket.new
