@@ -37,6 +37,10 @@ describe Menu do
         ])
         expect(menu.ticket_count).to be(1)
     end
+
+# check happy path test.. 
+# load tickets returns a array of tickets 
+# test that i get error if credentials are wrong 
  
 end
 
