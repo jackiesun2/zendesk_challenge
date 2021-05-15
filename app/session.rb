@@ -8,6 +8,8 @@ class Session
         @credentials = JSON.parse(File.read("././credentials.json"), symbolize_names: true)
     end
 
+# load_tickets method uses faraday gem to authenticate and creates a get request from zendesk API
+
     def load_tickets(page_number)
         begin
             conn = Faraday.new
@@ -30,6 +32,9 @@ class Session
         puts "Press 3 to exit"
         puts "-" * 30
     end
+
+# To view all tickets initalize the tickets class
+# To view a ticket initalize the ticket class
 
     def menu
         selection = gets.chomp.to_i
