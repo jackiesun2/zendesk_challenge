@@ -6,65 +6,63 @@ class Ticket
         @zendesk_tickets = tickets[:tickets]
     end
 
-    def view_ticket
-        show_ticket(@zendesk_tickets)
-    end
-
-    def show_ticket(ticket_array)
-        system 'clear'
-        ticket_reset = 0
-        ticket_array.each_with_index do |ticket, index| 
-            puts "Ticket Number: #{index + 1} | Subject: #{ticket[:subject]}"
-            puts "-" * 30
-            ticket_reset += 1
-            if ticket_reset >= 25
-                ticket_reset = 0
-                puts "Enter ticket number | Type anything or press enter for next page"
-                user_input = gets.chomp
-                select_ticket(user_input)
+    def view_all
+        display_tickets = true
+        while display_tickets
+            system 'clear'
+            ticket_reset = 0
+            @zendesk_tickets.each_with_index do |ticket, index| 
+                puts "Ticket Number: #{ticket[:id]} | Subject: #{ticket[:subject]}"
+                puts "-" * 30
+                ticket_reset += 1
+                if ticket_reset >= 25
+                    ticket_reset = 0
+                    puts "Enter a valid ticket number | Type anything or press enter for next page"
+                    user_input = gets.chomp
+                    display_tickets = select_ticket(user_input)
+                    break unless display_tickets
+                end
+            end
+            if display_tickets 
+                display_tickets = last_page
+                refresh_session = Session.new
+                @zendesk_tickets = refresh_session.load_tickets(2)[:tickets]
+            else
+                break
             end
         end
-        refresh_session = Session.new
-        refresh_session.menu_redirect
+    end
+
+    def select_ticket(input, page_index = 0)
+        if input.match(/[0-9]+/) && input.to_i.between?(1,@zendesk_tickets[-1][:id])
+            ticket_index = page_index - (input.to_i - 1)  
+            system 'clear'
+            puts "Ticket Number: #{input}"
+            puts "Requester ID: #{@zendesk_tickets[ticket_index][:requester_id]}"
+            puts "Subject: #{@zendesk_tickets[ticket_index][:subject]}"
+            puts "Description: #{@zendesk_tickets[ticket_index][:description]}"
+            puts "-" * 20
+            puts "Type anything or press enter to return to menu"
+            user_selection = gets.chomp
+            false
+        else
+            system 'clear'
+        end
+    end
+
+    def last_page
+        if @zendesk_tickets.length == 100
+            true
+        else
+            puts "No more further tickets, select ticket or press any key to return to main menu"
+            user_input = gets.chomp
+            select_ticket(user_input, 100)
+            system 'clear'
+            false 
+        end
     end
     
-    def select_ticket(input)
-        if input.match(/[0-9]+/)
-            # if input.to_i == (1..@zendesk_tickets.length) 
-                # ticket_index = (input.to_i - 1)  
-                # system 'clear'
-                # puts "Ticket Number: #{input}"
-                puts @zendesk_tickets.length
-        #         puts "Requester ID: #{@zendesk_tickets[ticket_index][:requester_id]}"
-        #         puts "Subject: #{@zendesk_tickets[ticket_index][:subject]}"
-        #         puts "Description: #{@zendesk_tickets[ticket_index][:description]}"
-        #         puts "-" * 20
-        #         menu_selection_single
-        #     else
-        #         system 'clear'
-        #         puts "Please input valid ticket number"
-        #         menu_selection_single
-            # end
-        # elsif input == "m"
-        #     refresh_session = Session.new
-        #     refresh_session.menu_redirect
-        # else
-        #     system 'clear'
-        end
-    end
-
-    def menu_selection_single
-        puts "Press 1 to return to menu and press 2 to view all tickets"
-        redirect_input = gets.chomp.to_i
-        case redirect_input
-        when 1 
-            refresh_session = Session.new
-            refresh_session.menu_redirect
-        when 2
-            system 'clear'
-            view_ticket
-        end
-    end
-
 end
+
+
 

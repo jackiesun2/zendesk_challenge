@@ -2,9 +2,11 @@ require_relative './session'
 require "json"
 require 'faraday'
 
-credentials = JSON.parse(File.read("././credentials.json"), symbolize_names: true)
+# Initialize a new session and load the first 100 tickets. 
 session_new = Session.new
-session_new.load_tickets(credentials[:username], credentials[:password])
-session_new.welcome_message
-session_new.menu
+session_new.load_tickets(1)
+loop do
+    session_new.welcome_message
+    session_new.menu
+end
 

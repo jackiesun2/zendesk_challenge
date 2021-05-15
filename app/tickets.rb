@@ -5,44 +5,45 @@ class Tickets
 
     def initialize(tickets = [])
         @zendesk_tickets = tickets[:tickets]
-        @page = 1
     end
 
     def view_all
-        system 'clear'
-        # ticket_reset = 0
-        @zendesk_tickets.each_with_index do |ticket, index|
-            puts "Ticket Number: #{index + 1} | Assignee id: #{ticket[:assignee_id]}"
-            puts "Subject: #{ticket[:subject]}"
-            puts "Description:"
-            puts "#{ticket[:description][0..50]}"
-            puts "-" * 40
-        #     ticket_reset += 1
-        #     if ticket_reset >= 25
-        #         menu_selection_all
-        #         ticket_reset = 0
-            # end
-            if (index + 1) == @zendesk_tickets.length
-                @page += 1
-                puts "End of list, press any key to return to main menu"
-                gets.chomp
-                credentials = JSON.parse(File.read("././credentials.json"), symbolize_names: true)
-                refresh_session = Session.new
-                refresh_session.next_page(credentials[:username], credentials[:password])
-                system 'clear'
-                pp @zendesk_tickets[0]
-                # refresh_session.menu_redirect
+        display_tickets = true
+        while display_tickets
+            system 'clear'
+            ticket_reset = 0
+            @zendesk_tickets.each do |ticket|
+                puts "Ticket Number: #{ticket[:id]} | Assignee id: #{ticket[:assignee_id]}"
+                puts "Subject: #{ticket[:subject]}"
+                puts "Description:"
+                puts "#{ticket[:description][0..50]}"
+                puts "-" * 40
+                ticket_reset += 1
+                if ticket_reset >= 20
+                    menu_selection_all
+                    ticket_reset = 0
+                end
             end
+            display_tickets = last_page
+            refresh_session = Session.new
+            @zendesk_tickets = refresh_session.load_tickets(2)[:tickets]
+        end
+    end
+
+    def last_page
+        if @zendesk_tickets.length == 100 
+            true
+        else 
+            puts "No more further tickets, press any key to return to main menu"
+            gets.chomp
+            system 'clear'
+            false  
         end
     end
 
     def menu_selection_all
-        puts "Type anything or press enter for next page | Type 'm' to return to menu"
-        input = gets.chomp.downcase
-        if input == "m"
-            refresh_session = Session.new
-            refresh_session.menu_redirect
-        end
+        puts "Type anything or press enter for next page"
+        gets.chomp
     end
 
 end

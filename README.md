@@ -4,19 +4,20 @@ Zendesk Ticket Viewer is a interactive command line application that shows users
 
 ## Installation
 
-Firstly, ensure you are in the correct directory int he command prompt. You should be in the zendesk_challenge folder.
+Firstly, ensure you are in the correct directory in the command prompt. You should be in the zendesk_challenge folder. You will need to have Ruby install in your system, preferably version 2....
 
 Ensure all the relevant gems are in the Gemfile. These include:
 
-```ruby
-    gem "rspec", "~> 3.10"
-    gem 'faraday'
+### install bundler
+
+```bash
+    gem install bundler
 ```
 
 And then execute:
 
 ```bash
-    bundle
+    bundle install
 ```
 
 # Usage
@@ -28,3 +29,9 @@ In order to start the application, ensure you are in the command line and in the
 ```
 
 In the main menu, select 1 to view all tickets, select 2 to view a ticket and select 3 to exit the application. Press the enter or return key to submit your answer on the application. At the bottom of the terminal application, a message will prompt the user what to do next. If an error occurs, the application will prompt an error message.
+
+dot point instructions
+
+Add some screens shots
+
+mention how to run tests...
