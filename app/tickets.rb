@@ -8,7 +8,6 @@ class Tickets
     end
 
 # view_all method uses a nested iterator to display all tickets. 
-# while display tickets is true, loop will keep running 
 # ticket_reset variable resets to display 25 tickets at once
 # refresh_session initializes another session and makes get request for second page of tickets
 

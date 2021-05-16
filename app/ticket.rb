@@ -6,9 +6,9 @@ class Ticket
         @zendesk_tickets = tickets[:tickets]
     end
 
-# view_all displays all tickets, shows 25 tickets per time.
-# calls select_ticket method that returns a false boolean if a ticket is select. This breaks loop.
-# If no ticket is selected, display_ticket variable remains true and while loop continues to display all tickets.
+# view_all displays all tickets, shows 25 tickets at a time.
+# call the select_ticket method to return false if a ticket is selected. This breaks loop.
+# If no ticket is selected, display_ticket variable remains true and the loop continues to display all tickets.
 
     def view_all
         display_tickets = true
@@ -55,7 +55,7 @@ class Ticket
         end
     end
 
-# Ticket length under 100 means its the last page, returns boolean of false and turns display_tickets to false.
+# Ticket length under 100 means it's the last page, returns false and turns display_tickets to false.
 
     def last_page
         if @zendesk_tickets.length == 100
