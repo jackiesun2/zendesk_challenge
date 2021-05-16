@@ -39,7 +39,7 @@ class Tickets
         if @zendesk_tickets.length == 100 
             true
         else 
-            puts "No more further tickets, press any key to return to main menu"
+            puts "No more further tickets, type anything or press enter to return to main menu"
             gets.chomp
             system 'clear'
             false  

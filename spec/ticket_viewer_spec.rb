@@ -1,46 +1,37 @@
-require_relative '../menu_item'
-require_relative '../menu'
+require_relative '../app/session.rb'
+require_relative '../app/tickets.rb'
+require 'faraday'
+require "json"
 
-describe MenuItem do
-    it 'should return the subject of the ticket' do
-        requester_id = 1
-        assignee_id = 10
-        subject = "sample ticket"
-        description = "this is a new ticket"
-        tags = ["first ticket", "important"]
-        menu_item = Ticket.new(requester_id, assignee_id, subject, description, tags)
-        expect(menu_item.subject).to eq(subject)
+describe Session do
+
+    it 'should return StandardError if credentials are incorrect' do
+        conn = Faraday.new
+        credentials = JSON.parse(File.read("././credentials.json"), symbolize_names: true)
+        conn.basic_auth(credentials[:username], "Wrong_password")
+        response = conn.get("https://jackiesun2.zendesk.com/api/v2/tickets.json?page=1")
+        result = StandardError if response.status.to_i >= 400 
+        expect(result).to eq(StandardError)
     end
 
-    it 'should return the request id of the ticket' do 
-        requester_id = 1
-        assignee_id = 10
-        subject = "sample ticket"
-        description = "this is a new ticket"
-        tags = ["first ticket", "important"]
-        menu_item = Ticket.new(requester_id, assignee_id, subject, description, tags)
-        expect(menu_item.requester_id).to eq(requester_id)
+    it 'should return StandardError if path is incorrect' do
+        conn = Faraday.new
+        credentials = JSON.parse(File.read("././credentials.json"), symbolize_names: true)
+        conn.basic_auth(credentials[:username], credentials[:password])
+        response = conn.get("https://jackiesun2.zendesk.com/api/v2/wrong_path")
+        result = StandardError if response.status.to_i >= 400 
+        expect(result).to eq(StandardError)
+    end
+
+    it 'should return an array of 100 tickets' do
+        conn = Faraday.new
+        credentials = JSON.parse(File.read("././credentials.json"), symbolize_names: true)
+        conn.basic_auth(credentials[:username], credentials[:password])
+        response = conn.get("https://jackiesun2.zendesk.com/api/v2/tickets.json?page=1")
+        raise StandardError if response.status.to_i >= 400 
+        zendesk_tickets = JSON.parse(response.body, symbolize_names: true)
+        new_session = Tickets.new(zendesk_tickets)
+        expect(zendesk_tickets[:tickets].length).to eq(100)
     end
 
 end
-
-describe Menu do
-    it 'should be able to count the number of tickets' do
-        menu = Menu.new([
-            {
-                "requester_id": 1,
-                "assignee_id": 10,
-                "subject": "sample ticket",
-                "description": "this is a new ticket",
-                "tags": ["first ticket", "important"]
-            }
-        ])
-        expect(menu.ticket_count).to be(1)
-    end
-
-# check happy path test.. 
-# load tickets returns a array of tickets 
-# test that i get error if credentials are wrong 
- 
-end
-

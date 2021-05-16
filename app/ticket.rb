@@ -44,8 +44,9 @@ class Ticket
             puts "Ticket Number: #{input}"
             puts "Requester ID: #{@zendesk_tickets[ticket_index][:requester_id]}"
             puts "Subject: #{@zendesk_tickets[ticket_index][:subject]}"
-            puts "Description: #{@zendesk_tickets[ticket_index][:description]}"
-            puts "-" * 20
+            puts "Description:"
+            puts "#{@zendesk_tickets[ticket_index][:description]}"
+            puts "-" * 40
             puts "Type anything or press enter to return to menu"
             user_selection = gets.chomp
             false
